@@ -6,7 +6,7 @@ var logger = require("morgan");
 var partials = require("express-partials");
 var mongoose = require("mongoose");
 const routes = require("./routes");
- 
+
 var app = express();
 
 // view engine setup
@@ -16,7 +16,7 @@ app.set("view engine", "ejs");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(partials());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 

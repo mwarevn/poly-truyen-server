@@ -1,6 +1,8 @@
 class HomeController {
     index(req, res, next) {
-        res.render("home/index", { title: "Anh Minh" });
+        var page = req.query.page;
+
+        res.render("home/index", { page });
     }
 }
 

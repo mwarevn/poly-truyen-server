@@ -1,0 +1,75 @@
+<a href="/home" class="btn btn-sm btn-widse m-5">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+  </svg>
+  Back
+</a>
+
+<div class="hero my-5">
+  <div class="hero-content flex-col lg:flex-row p-0 m-0">
+    <img src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" class="poster w-64 rounded-lg shadow-2xl me-4" />
+    <div>
+      <span class="names" data-id="<%= id %>"></span>
+      <b class="text-2xl font-bold" id="display-name">Hello</b>
+      <div class="py-1"><b>Author: </b><span class="author"></span></div>
+      <div class="py-1"><b>publicAt: </b><span class="createdAt"></span></div>
+      <p><b>Description: </b></p>
+      <span class=" h-40 block desc" style="overflow-y: scroll;width: 701px; "></span>
+    </div>
+  </div>
+</div>
+<div class="divider">Kéo xuống để đọc</div>
+<div class="grid grid-cols-4 gap-4">
+  <section class="col-span-3 contents-container">
+  </section>
+  <div>
+    <div class="divider divider-end">Bình luận</div>
+    <aside class="comments-container border border-l-4 border-dashed">
+      <!--  -->
+      <div class="chat chat-start">
+        <div class="chat-image avatar">
+          <div class="w-10 rounded-full">
+            <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+          </div>
+        </div>
+        <div class="chat-header">
+          Obi-Wan Kenobi
+          <time class="text-xs opacity-50">12:45</time>
+        </div>
+        <div class="chat-bubble">You were the Chosen One!</div>
+      </div>
+      <!--  -->
+    </aside>
+  </div>
+</div>
+
+<script>
+  var id = document.querySelector('span.names')
+    .getAttribute("data-id");
+
+
+  const name = document.getElementById('display-name');
+  const author = document.querySelector('.author');
+  const createdAt = document.querySelector('.createdAt');
+  const desc = document.querySelector('.desc');
+  const poster = document.querySelector('.poster');
+  const contentsContainer = document.querySelector('.contents-container')
+
+  fetch(`/comic/` + id)
+    .then(res => res.json())
+    .then(res => {
+      name.innerText = res.name;
+      author.innerText = res.author;
+      createdAt.innerText = res.createdAt;
+      desc.innerText = res.desc;
+      poster.src = "/images/" + res.poster;
+
+      contentsContainer.innerHTML = res.contents.map((e, i) => {
+          return `<img src="/images/${e}" />`
+        })
+        .join("")
+    })
+    .catch(err => {
+
+    })
+</script>

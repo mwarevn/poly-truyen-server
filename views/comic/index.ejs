@@ -1,0 +1,217 @@
+<button onclick="modal_comic_editor.showModal()" class="btn btn-neutral btn-wide mt-4">Thêm truyện mới +</button>
+
+<div class="divider sdivider-neutral">Danh sách truyện</div>
+<section id="comic-container" class="grid grid-cols-5 gap-4 mb-5"></section>
+<div class="divider sdivider-neutral">end</div>
+
+<!-- Modal comic editor -->
+<dialog id="modal_comic_editor" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl ">
+    <h3 class="font-bold text-3xl">Comic Editor</h3>
+
+    <form action="/comic/create" method="POST" enctype="multipart/form-data" class="hero mt-4">
+      <div class="hero-content flex-col lg:flex-row p-0">
+        <img id="preview-poster" src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" class="w-64 rounded-lg shadow-2xl" />
+        <div class="grid grid-cols-2 gap-4">
+
+          <div>
+            <label class="form-control w-full max-w-xs">
+              <div class="label">
+                <span class="label-text">Chọn poster</span>
+              </div>
+              <input required autocomplete="off" name="poster" type="file" class="file-input file-input-bordered w-full max-w-xs" />
+            </label>
+
+            <label class="form-control w-full max-w-xs mt-4">
+              <div class="label">
+                <span class="label-text">Nội dung truyện (chọn nhiều ảnh)</span>
+              </div>
+              <input required autocomplete="off" name="contents" type="file" multiple class="file-input file-input-bordered w-full max-w-xs" />
+            </label>
+          </div>
+
+          <div>
+            <label class="form-control w-full max-w-xs">
+              <div class="label">
+                <span class="label-text">Tên truyện</span>
+              </div>
+              <input required autocomplete="off" name="name" type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+            </label>
+
+            <label class="form-control w-full max-w-xs mt-4">
+              <div class="label">
+                <span class="label-text">Tên tác giả hoặc dịch giả</span>
+              </div>
+              <input required autocomplete="off" name="author" type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+            </label>
+
+            <label class="form-control mt-4">
+              <div class="label">
+                <span class="label-text">Mô tả ngắn</span>
+              </div>
+              <textarea required autocomplete="off" name="desc" class="textarea textarea-bordered h-24" placeholder="Description..."></textarea>
+            </label>
+          </div>
+
+
+        </div>
+      </div>
+      <button type="reset" class="btn-reset-editor" hidden></button>
+    </form>
+
+    <div class="modal-action">
+      <form method="dialog" class="form-cancel">
+        <!-- if there is a button, it will close the modal -->
+        <button class="btn">Cancel</button>
+      </form>
+      <button class="btn btn-primary btn-save-change">Save change</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Modal view detail comic -->
+<dialog id="modal_view_detail_comic" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl ">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <div class="hero">
+      <div class="hero-content flex-col lg:flex-row p-0 m-0">
+        <img class="poster w-64 rounded-lg shadow-2xl me-4" />
+        <div>
+          <h1 class="text-2xl font-bold name"></h1>
+          <div class="py-1"><b>Author: </b><span class="author"></span></div>
+          <div class="py-1"><b>publicAt: </b><span class="createdAt"></span></div>
+          <p><b>Description: </b></p>
+          <span class=" h-40 block desc" style="overflow-y: scroll;width: 701px; "></span>
+          <a class="badge badge-outline badge-primary cursor-pointer hover:opacity-75 mx-auto block mt-4 link-read-comic">Đọc truyện</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // handle add new comic
+  // show preview poster
+  const modal_comic_editor = document.getElementById('modal_comic_editor');
+  const form = modal_comic_editor.querySelector('form')
+  const previewPoster = document.getElementById('preview-poster');
+  const inputImage = form.querySelectorAll('input')[0];
+  const btnSaveChange = modal_comic_editor.querySelector('.btn-save-change');
+  var currentId = null;
+
+  document.querySelector('.form-cancel')
+    .onsubmit = e => {
+      e.preventDefault();
+
+      previewPoster.src = "https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg"
+
+      document.querySelector('.btn-reset-editor')
+        .click();
+
+      document.querySelector('.form-cancel')
+        .submit()
+    }
+
+  inputImage.onchange = (e) => {
+    imgObj = URL.createObjectURL(e.target.files[0]);
+    previewPoster.src = imgObj
+    previewPoster.onload = function() {
+      URL.revokeObjectURL(previewPoster.src)
+    }
+  }
+
+  btnSaveChange.onclick = () => {
+    if (currentId) {
+      form.action = "/comic/update/" + currentId;
+      form.submit()
+    } else {
+      form.action = "/comic/create";
+      form.submit()
+    }
+  }
+
+  // handle view comics
+  var LIST_COMICS = []
+  const comic_handler = {
+
+
+    editComic: function(index) {
+      currentId = LIST_COMICS[index]._id
+      var inputs = form.querySelectorAll('input');
+      var poster = inputs[0];
+      var contents = inputs[1];
+      var name = inputs[2];
+      var author = inputs[3];
+      var desc = form.querySelector('textarea');
+
+      previewPoster.src = "images/" + LIST_COMICS[index].poster;
+      name.value = LIST_COMICS[index].name;
+      author.value = LIST_COMICS[index].author;
+      desc.value = LIST_COMICS[index].desc;
+
+      modal_comic_editor.showModal()
+
+
+    },
+
+    viewDetailsComic: function(index) {
+      const modal_view_detail_comic = document.getElementById('modal_view_detail_comic');
+
+      const name = modal_view_detail_comic.querySelector('.name'),
+        author = modal_view_detail_comic.querySelector('.author'),
+        createdAt = modal_view_detail_comic.querySelector('.createdAt'),
+        desc = modal_view_detail_comic.querySelector('.desc'),
+        poster = modal_view_detail_comic.querySelector('.poster'),
+        readComic = modal_view_detail_comic.querySelector('.link-read-comic');
+
+      name.innerText = LIST_COMICS[index].name
+      createdAt.innerText = LIST_COMICS[index].createdAt
+      desc.innerText = LIST_COMICS[index].desc
+      author.innerText = LIST_COMICS[index].author
+      poster.src = "images/" + LIST_COMICS[index].poster
+      readComic.href = "comic/read/" + LIST_COMICS[index]._id
+
+      modal_view_detail_comic.showModal()
+
+    },
+
+    fillListComicToPage: function() {
+      document.getElementById('comic-container')
+        .innerHTML = LIST_COMICS.map((e, i) => {
+
+          return `
+            <div class="card w-64 bg-base-100 shadow-xl msx-4">
+                <figure><img src="images/${e.poster}" alt="Shoes" /></figure>
+                <div class="card-body">
+                <h2 class="card-title">${e.name}</h2>
+                <p>${this.shortDescFormat(e.desc)}</p>
+                <div class="card-actions justify-end">
+                    <div class="badge badge-outline cursor-pointer  hover:opacity-75" onclick="comic_handler.editComic(${i})">Chỉnh sửa</div>
+                    <div class="badge badge-outline cursor-pointer  hover:opacity-75" onclick="comic_handler.viewDetailsComic(${i})">Chi tiết</div>
+                </div>
+                </div>
+            </div>
+            `;
+
+        })
+        .join('')
+    },
+    shortDescFormat: function(desc) {
+      if (desc.split('')
+        .length <= 150) {
+        return desc;
+      } else {
+        return desc.slice(0, 145) + "....."
+      }
+    }
+  }
+
+  fetch('comic/get-all-comics')
+    .then(res => res.json())
+    .then(res => {
+      LIST_COMICS = res;
+    })
+    .then(() => comic_handler.fillListComicToPage())
+</script>
