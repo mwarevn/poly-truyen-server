@@ -1,3 +1,4 @@
+<script src="js/support.js"></script>
 <button onclick="modal_comic_editor.showModal()" class="btn btn-neutral btn-wide mt-4">Thêm truyện mới +</button>
 
 <div class="divider sdivider-neutral">Danh sách truyện</div>
@@ -167,7 +168,7 @@
         readComic = modal_view_detail_comic.querySelector('.link-read-comic');
 
       name.innerText = LIST_COMICS[index].name
-      createdAt.innerText = LIST_COMICS[index].createdAt
+      createdAt.innerText = convertDateTime(LIST_COMICS[index].createdAt)
       desc.innerText = LIST_COMICS[index].desc
       author.innerText = LIST_COMICS[index].author
       poster.src = "images/" + LIST_COMICS[index].poster
