@@ -3,7 +3,6 @@ const userModel = require("../models/user.model");
 class SignController {
     async signIn(req, res) {
         var loginPayload = req.body;
-        console.log(loginPayload);
         var validUser = null;
 
         try {
@@ -14,6 +13,11 @@ class SignController {
             }
 
             if (validUser && validUser.role == "admin") {
+                res.cookie("admin", "" + validUser._id + "", {
+                    expires: new Date(Date.now() + 99900000), // 15 phút
+                    httpOnly: false,
+                    secure: false,
+                });
                 res.json(validUser);
             } else {
                 res.status(501).json({ msg: "Username/Email or password is invalid!" });

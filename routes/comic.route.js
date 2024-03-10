@@ -24,5 +24,6 @@ comicRouter.get("/get-all-comics", comicCtrl.getAllComics);
 comicRouter.get("/:id", comicCtrl.getComicbyId);
 comicRouter.post("/create", upload, comicCtrl.createNewComic);
 comicRouter.post("/update/:id", upload, comicCtrl.updateComicById);
+comicRouter.delete("/delete/:id", comicCtrl.deleteComicById);
 
 module.exports = comicRouter;

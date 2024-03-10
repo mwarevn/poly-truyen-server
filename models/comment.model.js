@@ -2,9 +2,9 @@ var mongoose = require("mongoose");
 
 var commentSchema = new mongoose.Schema(
     {
-        idComic: { type: mongoose.Schema.ObjectId, required: true },
-        idUser: { type: mongoose.Schema.ObjectId, required: true },
-        contents: String,
+        idComic: { type: String, required: true },
+        idUser: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
+        content: String,
     },
     {
         timestamps: true,

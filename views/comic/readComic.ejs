@@ -1,5 +1,10 @@
 <script src="/js/support.js"></script>
-<a href="/home" class="btn btn-sm btn-widse m-5">
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+<a href="/home" class="btn bg-white hover:bg-white border-0 hover:border-2 btn-sm m-5 text-secondary">
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
   </svg>
@@ -16,6 +21,7 @@
       <div class="py-1"><b>publicAt: </b><span class="createdAt"></span></div>
       <p><b>Description: </b></p>
       <span class=" h-40 block desc" style="overflow-y: scroll;width: 701px; "></span>
+      <a class="btn btn-outline btn-secondary" href="#position-comment">Bình luận</a>
     </div>
   </div>
 </div>
@@ -26,34 +32,27 @@
 </section>
 
 <!-- comments -->
-<div class="border border-l-4 border-dashed mx-auto p-2 h-96" style="width: 900px;">
+<div class="border border-4 border-dashed mx-auto p-2 min-h-96" style="width: 900px;" id="position-comment">
+  <a class="link link-accent ms-2 mt-2 block flex" href="#">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 me-1">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+    </svg>
+    về đầu trang
+  </a>
   <div class="divider divider-start">Bình luận</div>
-  <div class="flex ">
-    <input type="text" placeholder="Type here" class="rounded-full input input-bordered input-md w-full max-w-xs" />
-    <button class="btn btn-ghost btn-circle">
+  <div class="flsex items-center">
+    <textarea class="textarea textarea-bordered w-full h-48" placeholder="Nhập bình luận"></textarea>
+    <button class="btn btn-save-comment btn-sm btn-outline btn-neutral mt-4">
+      Gửi bình luận
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
       </svg>
-
     </button>
-
   </div>
-  <aside class="comments-container ">
-    <!--  -->
-    <div class="chat chat-start">
-      <div class="chat-image avatar">
-        <div class="w-10 rounded-full">
-          <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-        </div>
-      </div>
-      <div class="chat-header">
-        Obi-Wan Kenobi
-        <time class="text-xs opacity-50">12:45</time>
-      </div>
-      <div class="chat-bubble">You were the Chosen One!</div>
-    </div>
-    <!--  -->
-  </aside>
+
+  <div class="divider"></div>
+
+  <aside class="comments-container px-4 min-h-96 block overflow-y-scroll"></aside>
 
 </div>
 <script>
@@ -67,7 +66,67 @@
   const desc = document.querySelector('.desc');
   const poster = document.querySelector('.poster');
   const contentsContainer = document.querySelector('.contents-container')
+  const commentsContainer = document.querySelector('.comments-container')
+  var listComments = []
 
+  const fillComment = () => {
+
+    var newList = [...listComments];
+
+    if (newList.length <= 0) {
+      commentsContainer.innerText = "Hãy là người đầu tiên bình luận!";
+      return
+    }
+
+    commentsContainer.innerHTML = newList.reverse()
+      .map((e, i) => {
+        if (e.idUser) {
+          return `
+            <div class="chat chat-start">
+              <div class="chat-image avatar">
+                <div class="w-10 rounded-full">
+                  <img src=${e.idUser.role == "admin" ? 'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg' : 'https://assets-global.website-files.com/6411daab15c8848a5e4e0153/64a3587a690c6ddc503ee672_Avatar_No%20photo.png'} />
+                </div>
+              </div>
+              <div class="chat-header">
+                ${e.idUser.fullName}
+                ${e.idUser.role && e.idUser.role == "admin" ? '<img src="/icons/verify.png" class="inline"/>' : ""}
+                <time class="text-xs opacity-50">${convertDateTime(e.createdAt)}</time>
+              </div>
+              <div class="chat-bubble">${e.content}</div>
+            </div>
+            `;
+        } else {
+          return `
+            <div class="chat chat-start">
+              <div class="chat-image avatar">
+                <div class="w-10 rounded-full">
+                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZUhZZylV5X9rkMQEhhA54r9rLFuxxwpUgAt0xg30R5jLjlVPUnM7FTfcJMsWCCs2LzcE&usqp=CAU" />
+                </div>
+              </div>
+              <div class="chat-header text-error">
+                Tài khoản đã xóa
+                <time class="text-xs opacity-50">${convertDateTime(e.createdAt)}</time>
+              </div>
+              <div class="chat-bubble">${e.content}</div>
+            </div>
+            `;
+        }
+      })
+      .join('')
+  }
+
+  // get comments of comic
+  fetch('/comment/comic/' + id)
+    .then(res => {
+      return res.json()
+    })
+    .then(res => {
+      listComments = res
+      fillComment()
+    })
+
+  // get contents of comic
   fetch(`/comic/` + id)
     .then(res => res.json())
     .then(res => {
@@ -77,12 +136,64 @@
       desc.innerText = res.desc;
       poster.src = "/images/" + res.poster;
 
-      contentsContainer.innerHTML = res.contents.map((e, i) => {
+      contentsContainer.innerHTML = res.contents.reverse()
+        .map((e, i) => {
           return `<img class="block mx-auto" src="/images/${e}" />`
         })
         .join("")
-    })
-    .catch(err => {
+    });
 
-    })
+  // handle send new comment from admin panel
+  document.addEventListener('DOMContentLoaded', () => {
+    var idUser = document.cookie.split("admin=")[1].split(";")[0];
+    var btnSaveComment = document.querySelector('.btn-save-comment');
+    var inputContent = document.querySelector('textarea');
+
+
+    btnSaveComment.onclick = e => {
+
+
+      if (inputContent.value == "") {
+        Toastify({
+            text: "Vui lòng không bỏ trống bình luận",
+            duration: 3000,
+            close: true,
+            gravity: "bottom",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+              background: "red"
+            },
+          })
+          .showToast();
+        return;
+      }
+
+      var commentPayload = {
+        idComic: id,
+        idUser: idUser,
+        content: inputContent.value
+      }
+
+      fetch(`/comment/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(commentPayload)
+        })
+        .then(res => res.json())
+        .then(res => {
+
+          if (res._id) {
+            inputContent.value = ""
+            listComments.push(res);
+            fillComment()
+          }
+        })
+
+    }
+
+
+  })
 </script>

@@ -1,6 +1,7 @@
 const { response } = require("express");
 const comicModel = require("../models/comic.model");
 const { responseError } = require("../middlewares/ErrorHandle");
+const commentModel = require("../models/comment.model");
 
 class ComicController {
     getAllComics(req, res, next) {
@@ -45,8 +46,6 @@ class ComicController {
             ...req.body,
         };
 
-        console.log(req.files);
-
         if (req.files["poster"] && req.files["poster"].length != 0) {
             comicPayload.poster = req.files["poster"][0].filename;
         }
@@ -90,6 +89,25 @@ class ComicController {
             .catch((err) => {
                 responseError(res, 501, err);
             });
+    }
+
+    async deleteComicById(req, res) {
+        var id = req.params.id;
+
+        var deletedComic = await comicModel.findByIdAndDelete(id);
+
+        if (deletedComic) {
+            commentModel
+                .deleteMany({ idComic: id })
+                .then((deletedComments) => {
+                    res.json(deletedComments);
+                })
+                .catch((err) => {
+                    responseError(res, 501, +err);
+                });
+        } else {
+            responseError(res, 501, "Lỗi không thể xóa truyện này!");
+        }
     }
 }
 

@@ -1,7 +1,13 @@
 <script src="js/support.js"></script>
-<button onclick="modal_comic_editor.showModal()" class="btn btn-neutral btn-wide mt-4">Thêm truyện mới +</button>
 
-<div class="divider sdivider-neutral">Danh sách truyện</div>
+<div class="divider sdivider-neutral"></div>
+
+<div class="flex items-center justify-between">
+  <h3 class="font-bold text-xl">Comic Manager</h3>
+  <button onclick="modal_comic_editor.showModal()" class="btn btn-neutral btn-sm">Thêm truyện mới +</button>
+</div>
+
+<div class="divider sdivider-neutral"></div>
 <section id="comic-container" class="grid grid-cols-5 gap-4 mb-5"></section>
 <div class="divider sdivider-neutral">end</div>
 
@@ -46,11 +52,15 @@
               <input required autocomplete="off" name="author" type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
             </label>
 
-            <label class="form-control mt-4">
+
+          </div>
+
+          <div class="col-span-2">
+            <label class="form-control">
               <div class="label">
                 <span class="label-text">Mô tả ngắn</span>
               </div>
-              <textarea required autocomplete="off" name="desc" class="textarea textarea-bordered h-24" placeholder="Description..."></textarea>
+              <textarea required autocomplete="off" name="desc" class="textarea textarea-bordered h-40" placeholder="Description..."></textarea>
             </label>
           </div>
 
@@ -65,7 +75,7 @@
         <!-- if there is a button, it will close the modal -->
         <button class="btn">Cancel</button>
       </form>
-      <button class="btn btn-primary btn-save-change">Save change</button>
+      <button class="btn btn-secondary btn-save-change">Save change</button>
     </div>
   </div>
 </dialog>
@@ -81,11 +91,11 @@
         <img class="poster w-64 rounded-lg shadow-2xl me-4" />
         <div>
           <h1 class="text-2xl font-bold name"></h1>
-          <div class="py-1"><b>Author: </b><span class="author"></span></div>
-          <div class="py-1"><b>publicAt: </b><span class="createdAt"></span></div>
-          <p><b>Description: </b></p>
+          <div class="py-1"><b>Tác giả : </b><span class="author"></span></div>
+          <div class="py-1"><b>Ngày đăng: </b><span class="createdAt"></span></div>
+          <p><b>Mô tả nội dung: </b></p>
           <span class=" h-40 block desc" style="overflow-y: scroll;width: 701px; "></span>
-          <a class="badge badge-outline badge-primary cursor-pointer hover:opacity-75 mx-auto block mt-4 link-read-comic">Đọc truyện</a>
+          <a class="btn btn-accent btn-outline btn-wide mx-auto block mt-4 link-read-comic flex items-center">Đọc truyện</a>
         </div>
       </div>
     </div>
@@ -137,7 +147,56 @@
   var LIST_COMICS = []
   const comic_handler = {
 
+    deleteComic: function(index) {
+      Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
 
+            fetch('comic/delete/' + LIST_COMICS[index]._id, {
+                method: "DELETE"
+              })
+              .then(res => res.json())
+              .then(res => {
+                if (!res.msg && res) {
+                  Swal.fire({
+                      title: "Deleted!",
+                      text: "Your file has been deleted.",
+                      icon: "success"
+                    })
+                    .then(callback => {
+                      if (callback.isConfirmed) {
+                        window.location.reload();
+                      }
+                    })
+                } else {
+                  Toastify({
+                      text: res.msg,
+                      duration: 3000,
+                      close: true,
+                      gravity: "bottom",
+                      position: "center",
+                      stopOnFocus: true,
+                      style: {
+                        background: "red"
+                      },
+                    })
+                    .showToast();
+                }
+              })
+
+
+
+          }
+        });
+    },
     editComic: function(index) {
       currentId = LIST_COMICS[index]._id
       var inputs = form.querySelectorAll('input');
@@ -183,15 +242,16 @@
         .innerHTML = LIST_COMICS.map((e, i) => {
 
           return `
-            <div class="card w-64 bg-base-100 shadow-xl msx-4">
-                <figure><img src="images/${e.poster}" alt="Shoes" /></figure>
+            <div class="card w-64 bg-base-100 shadow-xl msx-4 select-none	">
+                <figure><img class=" cursor-pointer rounded-md max-h-72" src="images/${e.poster}" alt="Shoes" onclick="comic_handler.viewDetailsComic(${i})" /></figure>
                 <div class="card-body">
-                <h2 class="card-title">${e.name}</h2>
-                <p>${this.shortDescFormat(e.desc)}</p>
-                <div class="card-actions justify-end">
-                    <div class="badge badge-outline cursor-pointer  hover:opacity-75" onclick="comic_handler.editComic(${i})">Chỉnh sửa</div>
-                    <div class="badge badge-outline cursor-pointer  hover:opacity-75" onclick="comic_handler.viewDetailsComic(${i})">Chi tiết</div>
-                </div>
+                <h2 class=" cursor-pointer card-title" onclick="comic_handler.viewDetailsComic(${i})">${e.name}</h2>
+                <!--p>${this.shortDescFormat(e.desc)}</p--!>
+                  <div class="card-actions justify-start flex">
+                      <div class="badge badge-neutral cursor-pointer  hover:opacity-75" onclick="comic_handler.editComic(${i})">Chỉnh sửa</div>
+                      <!--div class="badge badge-secondary cursor-pointer  hover:opacity-75" onclick="comic_handler.viewDetailsComic(${i})">Chi tiết</div --!>
+                      <div class="badge badge-error text-white cursor-pointer  hover:opacity-75" onclick="comic_handler.deleteComic(${i})">Xóa</div>
+                  </div>
                 </div>
             </div>
             `;
