@@ -82,7 +82,7 @@
       .map((e, i) => {
         if (e.idUser) {
           return `
-            <div class="chat chat-start">
+            <div class="chat chat-start" data-id="${e._id}">
               <div class="chat-image avatar">
                 <div class="w-10 rounded-full">
                   <img src=${e.idUser.role == "admin" ? 'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg' : 'https://assets-global.website-files.com/6411daab15c8848a5e4e0153/64a3587a690c6ddc503ee672_Avatar_No%20photo.png'} />
@@ -98,10 +98,10 @@
             `;
         } else {
           return `
-            <div class="chat chat-start">
+            <div class="chat chat-start" data-id="${e._id}">
               <div class="chat-image avatar">
                 <div class="w-10 rounded-full">
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZUhZZylV5X9rkMQEhhA54r9rLFuxxwpUgAt0xg30R5jLjlVPUnM7FTfcJMsWCCs2LzcE&usqp=CAU" />
+                  <img src="data:image/jpeg;base64,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" />
                 </div>
               </div>
               <div class="chat-header text-error">
@@ -114,8 +114,115 @@
         }
       })
       .join('')
+
+    setBtnDelete()
   }
 
+  const setBtnDelete = () => {
+    const chatBubbles = document.querySelectorAll('.chat-bubble');
+    chatBubbles.forEach((element, index) => {
+      const outerText = element.outerText;
+
+      // Create button element
+      const button = document.createElement('button');
+      button.className = 'btn btn-circle absolute min-h-3 min-w-3 btn-delete-comment';
+      button.style.right = '-50px';
+      button.style.bottom = 'calc(50% - 48px / 2)';
+      button.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+          </svg>
+        `;
+
+      // Append button to chat bubble
+      button.style.display = 'none';
+      element.appendChild(button);
+      var istracking = true;
+      var timeOut = null;
+
+      button.onclick = () => {
+
+        let id = element.parentElement.getAttribute('data-id');
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+
+              fetch('/comment/delete/' + id, {
+                  method: "DELETE"
+                })
+                .then(res => res.json())
+                .then(res => {
+                  if (!res.msg && res) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                      })
+                      .then(callback => {
+                        if (callback.isConfirmed) {
+                          window.location.reload();
+                        }
+                      })
+                  } else {
+                    Toastify({
+                        text: res.msg,
+                        duration: 3000,
+                        close: true,
+                        gravity: "bottom",
+                        position: "center",
+                        stopOnFocus: true,
+                        style: {
+                          background: "red"
+                        },
+                      })
+                      .showToast();
+                  }
+                })
+
+
+
+            }
+          });
+      }
+
+      // Handle mouse events
+      element.onmouseover = event => {
+        istracking = true;
+        button.style.display = 'flex';
+      }
+
+      element.onmouseout = event => {
+        timeOut = setTimeout(() => {
+          istracking = false;
+          if (!istracking) {
+            button.style.display = 'none';
+          }
+        }, 300)
+
+      }
+
+      button.onmouseover = event => {
+        clearTimeout(timeOut)
+        istracking = true
+        button.style.display = 'flex';
+      }
+
+      button.onmouseout = event => {
+        istracking = false;
+        button.style.display = 'none';
+      }
+    })
+
+  }
   // get comments of comic
   fetch('/comment/comic/' + id)
     .then(res => {
@@ -124,7 +231,9 @@
     .then(res => {
       listComments = res
       fillComment()
+      return true
     })
+    .then(() => {})
 
   // get contents of comic
   fetch(`/comic/` + id)

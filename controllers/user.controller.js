@@ -59,14 +59,14 @@ class UserController {
 
         existsUser = await userModel.findOne({ email: userPayload.email });
 
-        if (existsUser) {
+        if (existsUser && existsUser.email != userPayload.email) {
             responseError(res, 501, "Email hoặc username đã tồn tại trong hệ thống!");
             return;
         }
 
         existsUser = await userModel.findOne({ username: userPayload.username });
 
-        if (existsUser) {
+        if (existsUser && existsUser.username != userPayload.username) {
             responseError(res, 501, "Email hoặc username đã tồn tại trong hệ thống!");
             return;
         }
