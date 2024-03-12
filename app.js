@@ -8,7 +8,7 @@ var mongoose = require("mongoose");
 const routes = require("./routes");
 
 var app = express();
-
+// hello
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -24,23 +24,23 @@ routes(app);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    next(createError(404));
+	next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get("env") === "development" ? err : {};
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render("error");
+	// render the error page
+	res.status(err.status || 500);
+	res.render("error");
 });
 
 mongoose
-    .connect(process.env.MONGODB_CONNECTION_STRING)
-    .then((success) => console.log("Connected to mongodb server!"))
-    .catch((err) => console.log("Error, Couldn't connect to mongodb server!!!\n> Stack: " + err));
+	.connect(process.env.MONGODB_CONNECTION_STRING)
+	.then((success) => console.log("Connected to mongodb server!"))
+	.catch((err) => console.log("Error, Couldn't connect to mongodb server!!!\n> Stack: " + err));
 
 module.exports = app;
