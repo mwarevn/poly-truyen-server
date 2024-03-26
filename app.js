@@ -6,9 +6,10 @@ var logger = require("morgan");
 var partials = require("express-partials");
 var mongoose = require("mongoose");
 const routes = require("./routes");
+const comicModel = require("./models/comic.model");
+const socketApi = require("./socket/socket-io");
 
 var app = express();
-// hello
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -40,7 +41,9 @@ app.use(function (err, req, res, next) {
 
 mongoose
 	.connect(process.env.MONGODB_CONNECTION_STRING)
-	.then((success) => console.log("Connected to mongodb server!"))
+	.then((success) => {
+		console.log("Connected to mongodb server!");
+	})
 	.catch((err) => console.log("Error, Couldn't connect to mongodb server!!!\n> Stack: " + err));
 
 module.exports = app;

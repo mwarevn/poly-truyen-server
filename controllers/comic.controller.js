@@ -2,113 +2,117 @@ const { response } = require("express");
 const comicModel = require("../models/comic.model");
 const { responseError } = require("../middlewares/ErrorHandle");
 const commentModel = require("../models/comment.model");
+const socketApi = require("../socket/socket-io");
 
 class ComicController {
-    getAllComics(req, res, next) {
-        comicModel
-            .find({})
-            .then((comics) => {
-                if (comics) {
-                    res.json(comics);
-                } else {
-                    responseError(res, 501, "Lỗi không xác định từ server, không thể lấy danh sách truyện");
-                }
-            })
-            .catch((err) => {
-                responseError(res, 501, err);
-            });
-    }
+	getAllComics(req, res, next) {
+		comicModel
+			.find({})
+			.then((comics) => {
+				if (comics) {
+					res.json(comics);
+				} else {
+					responseError(res, 501, "Lỗi không xác định từ server, không thể lấy danh sách truyện");
+				}
+			})
+			.catch((err) => {
+				responseError(res, 501, err);
+			});
+	}
 
-    createNewComic(req, res) {
-        var comicPayload = {
-            ...req.body,
-            poster: req.files["poster"][0].filename,
-            contents: req.files["contents"].map((e) => e.filename),
-        };
+	createNewComic(req, res) {
+		var comicPayload = {
+			...req.body,
+			poster: req.files["poster"][0].filename,
+			contents: req.files["contents"].map((e) => e.filename),
+		};
 
-        comicModel
-            .create(comicPayload)
-            .then((comic) => {
-                if (comic) {
-                    res.redirect("back");
-                } else {
-                    responseError(res, 501, "Lỗi không thể tạo mới truyện!");
-                }
-            })
-            .catch((err) => {
-                responseError(res, 501, err);
-            });
-    }
+		comicModel
+			.create(comicPayload)
+			.then((comic) => {
+				if (comic) {
+					socketApi.io.emit("ServerPostNewComic", JSON.stringify(comic));
+					res.redirect("back");
+				} else {
+					responseError(res, 501, "Lỗi không thể tạo mới truyện!");
+				}
+			})
+			.catch((err) => {
+				responseError(res, 501, err);
+			});
+	}
 
-    updateComicById(req, res) {
-        var id = req.params.id;
-        var comicPayload = {
-            ...req.body,
-        };
+	updateComicById(req, res) {
+		var id = req.params.id;
+		var comicPayload = {
+			...req.body,
+		};
 
-        if (req.files["poster"] && req.files["poster"].length != 0) {
-            comicPayload.poster = req.files["poster"][0].filename;
-        }
+		if (req.files["poster"] && req.files["poster"].length != 0) {
+			comicPayload.poster = req.files["poster"][0].filename;
+		}
 
-        if (req.files["contents"] && req.files["contents"].length != 0) {
-            comicPayload.contents = req.files["contents"].map((e) => e.filename);
-        }
+		if (req.files["contents"] && req.files["contents"].length != 0) {
+			comicPayload.contents = req.files["contents"].map((e) => e.filename);
+		}
 
-        comicModel
-            .findByIdAndUpdate(id, comicPayload)
-            .then((comic) => {
-                if (comic) {
-                    res.redirect("back");
-                } else {
-                    responseError(res, 501, "Lỗi không thể update truyện!");
-                }
-            })
-            .catch((err) => {
-                responseError(res, 501, err);
-            });
-    }
+		comicModel
+			.findByIdAndUpdate(id, comicPayload)
+			.then((comic) => {
+				if (comic) {
+					socketApi.io.emit("changeListComic", "Change list comic");
+					res.redirect("back");
+				} else {
+					responseError(res, 501, "Lỗi không thể update truyện!");
+				}
+			})
+			.catch((err) => {
+				responseError(res, 501, err);
+			});
+	}
 
-    readComicById(req, res) {
-        var id = req.params.id;
-        res.render("comic/readComic.ejs", { id });
-    }
+	readComicById(req, res) {
+		var id = req.params.id;
+		res.render("comic/readComic.ejs", { id });
+	}
 
-    getComicbyId(req, res) {
-        var id = req.params.id;
+	getComicbyId(req, res) {
+		var id = req.params.id;
 
-        comicModel
-            .findById(id)
-            .then((comic) => {
-                if (!comic) {
-                    responseError(res, 501, "Lỗi không thể lấy thông tin của comic này!");
-                    return;
-                }
+		comicModel
+			.findById(id)
+			.then((comic) => {
+				if (!comic) {
+					responseError(res, 501, "Lỗi không thể lấy thông tin của comic này!");
+					return;
+				}
 
-                res.json(comic);
-            })
-            .catch((err) => {
-                responseError(res, 501, err);
-            });
-    }
+				res.json(comic);
+			})
+			.catch((err) => {
+				responseError(res, 501, err);
+			});
+	}
 
-    async deleteComicById(req, res) {
-        var id = req.params.id;
+	async deleteComicById(req, res) {
+		var id = req.params.id;
 
-        var deletedComic = await comicModel.findByIdAndDelete(id);
+		var deletedComic = await comicModel.findByIdAndDelete(id);
 
-        if (deletedComic) {
-            commentModel
-                .deleteMany({ idComic: id })
-                .then((deletedComments) => {
-                    res.json(deletedComments);
-                })
-                .catch((err) => {
-                    responseError(res, 501, +err);
-                });
-        } else {
-            responseError(res, 501, "Lỗi không thể xóa truyện này!");
-        }
-    }
+		if (deletedComic) {
+			commentModel
+				.deleteMany({ idComic: id })
+				.then((deletedComments) => {
+					socketApi.io.emit("changeListComic", "Change list comic");
+					res.json(deletedComments);
+				})
+				.catch((err) => {
+					responseError(res, 501, +err);
+				});
+		} else {
+			responseError(res, 501, "Lỗi không thể xóa truyện này!");
+		}
+	}
 }
 
 module.exports = new ComicController();
