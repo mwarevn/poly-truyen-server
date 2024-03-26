@@ -17,7 +17,9 @@ class HistoriesController {
 		let comic = req.query.comic;
 
 		let existsCache = await historyModel.findOne({ user });
+
 		let comicInfo = await comicModel.findById(comic);
+
 		if (!existsCache) {
 			historyModel.create({ user, history: [comicInfo] });
 			res.json({ message: "Create history successfully!" });
@@ -34,7 +36,11 @@ class HistoriesController {
 			historyModel
 				.findByIdAndUpdate(existsCache._id, existsCache, { new: true })
 				.then((newCache) => res.json({ newCache }))
-				.catch((error) => responseError(res, 501, error));
+				.catch((error) => {
+					console.log(error);
+					res.status(401).json({ message: "Create history successfully!" });
+					// responseError(res, 501, error);
+				});
 		}
 	}
 
@@ -57,6 +63,14 @@ class HistoriesController {
 					.then((newCache) => res.json({ newCache }))
 					.catch((error) => responseError(res, 501, error));
 			})
+			.catch((error) => responseError(res, 501, error));
+	}
+
+	clearCache(req, res) {
+		let idUser = req.params.idUser;
+		historyModel
+			.findOneAndDelete({ user: idUser })
+			.then((cache) => res.json({ message: "Delete cache successfully!" }))
 			.catch((error) => responseError(res, 501, error));
 	}
 }
