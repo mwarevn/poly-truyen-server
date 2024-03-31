@@ -81,6 +81,15 @@
 								class="input input-bordered w-full max-w-xs"
 							/>
 						</label>
+
+						<label class="form-control w-full max-w-xs mt-4">
+							<div class="label">
+								<span class="label-text">Thể loại</span>
+							</div>
+							<select name="cats" class="select select-bordered w-full max-w-xs">
+								<option disabled selected>Chọn thể loại?</option>
+							</select>
+						</label>
 					</div>
 
 					<div class="col-span-2">
@@ -125,6 +134,7 @@
 					<h1 class="text-2xl font-bold name"></h1>
 					<div class="py-1"><b>Tác giả : </b><span class="author"></span></div>
 					<div class="py-1"><b>Ngày đăng: </b><span class="createdAt"></span></div>
+					<div class="py-1"><b>Thể loại: </b><span class="cats"></span></div>
 					<p><b>Mô tả nội dung: </b></p>
 					<span class="h-40 block desc" style="overflow-y: scroll; width: 701px"></span>
 					<a class="btn btn-accent btn-outline btn-wide mx-auto block mt-4 link-read-comic flex items-center"
@@ -145,6 +155,7 @@
 	const inputImage = form.querySelectorAll("input")[0];
 	const btnSaveChange = modal_comic_editor.querySelector(".btn-save-change");
 	var currentId = null;
+	const select = document.querySelector("select[name=cats]");
 
 	document.querySelector(".form-cancel").onsubmit = (e) => {
 		e.preventDefault();
@@ -176,6 +187,25 @@
 
 	// handle view comics
 	var LIST_COMICS = [];
+	var LIST_CATS = [];
+
+	// fetch cats list from /cats/get-all-cats
+	const getAllCats = (selectedItem = null) => {
+		fetch("cats/get-all-cats")
+			.then((res) => res.json())
+			.then((res) => {
+				LIST_CATS = res;
+				return LIST_CATS;
+			})
+			.then((res) => {
+				select.innerHTML = LIST_CATS.map((e) => {
+					return `<option ${selectedItem == e._id ? "selected" : ""} value="${e._id}">${e.name}</option>`;
+				});
+			});
+	};
+
+	getAllCats();
+
 	const comic_handler = {
 		deleteComic: function (index) {
 			Swal.fire({
@@ -233,6 +263,7 @@
 			name.value = LIST_COMICS[index].name;
 			author.value = LIST_COMICS[index].author;
 			desc.value = LIST_COMICS[index].desc;
+			getAllCats(LIST_COMICS[index].cats ? LIST_COMICS[index].cats._id : null);
 
 			modal_comic_editor.showModal();
 		},
@@ -245,12 +276,18 @@
 				createdAt = modal_view_detail_comic.querySelector(".createdAt"),
 				desc = modal_view_detail_comic.querySelector(".desc"),
 				poster = modal_view_detail_comic.querySelector(".poster"),
+				cats = modal_view_detail_comic.querySelector(".cats"),
 				readComic = modal_view_detail_comic.querySelector(".link-read-comic");
 
 			name.innerText = LIST_COMICS[index].name;
 			createdAt.innerText = convertDateTime(LIST_COMICS[index].createdAt);
 			desc.innerText = LIST_COMICS[index].desc;
 			author.innerText = LIST_COMICS[index].author;
+			if (LIST_COMICS[index].cats) {
+				cats.innerText = LIST_COMICS[index].cats.name || "Không có thể loại";
+			} else {
+				cats.innerText = "Không có thể loại";
+			}
 			poster.src = "images/" + LIST_COMICS[index].poster;
 			readComic.href = "comic/read/" + LIST_COMICS[index]._id;
 

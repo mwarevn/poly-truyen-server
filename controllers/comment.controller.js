@@ -3,6 +3,21 @@ const commentModel = require("../models/comment.model");
 const socketApi = require("../socket/socket-io");
 
 class CommentController {
+	// [GET] /comment/get-all - get all comments
+	async getAllComments(req, res, next) {
+		commentModel
+			.find({})
+			.then((comments) => {
+				if (comments) {
+					res.json(comments);
+					return;
+				}
+			})
+			.catch((err) => {
+				responseError(res, 501, err);
+			});
+	}
+
 	// [GET] /comment/comic/:id
 	async getCommentsOfComicById(req, res, next) {
 		var idComic = req.params.id;

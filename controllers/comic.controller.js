@@ -8,6 +8,8 @@ class ComicController {
 	getAllComics(req, res, next) {
 		comicModel
 			.find({})
+			.populate("cats")
+			.exec()
 			.then((comics) => {
 				if (comics) {
 					res.json(comics);
@@ -29,6 +31,8 @@ class ComicController {
 
 		comicModel
 			.create(comicPayload)
+			.populate("cats")
+			.exec()
 			.then((comic) => {
 				if (comic) {
 					socketApi.io.emit("ServerPostNewComic", JSON.stringify(comic));
@@ -57,7 +61,9 @@ class ComicController {
 		}
 
 		comicModel
-			.findByIdAndUpdate(id, comicPayload)
+			.findByIdAndUpdate(id, comicPayload, { new: true })
+			.populate("cats")
+			.exec()
 			.then((comic) => {
 				if (comic) {
 					socketApi.io.emit("changeListComic", "Change list comic");
@@ -81,6 +87,8 @@ class ComicController {
 
 		comicModel
 			.findById(id)
+			.populate("cats")
+			.exec()
 			.then((comic) => {
 				if (!comic) {
 					responseError(res, 501, "Lỗi không thể lấy thông tin của comic này!");
@@ -112,6 +120,70 @@ class ComicController {
 		} else {
 			responseError(res, 501, "Lỗi không thể xóa truyện này!");
 		}
+	}
+
+	// [GET] /comic/top-popular/:top
+
+	getComicByTopComment(req, res) {
+		var top = req.params.top;
+		var time = new Date();
+		var timeBefore = new Date();
+
+		switch (top) {
+			case "day":
+				timeBefore.setDate(time.getDate() - 1);
+				break;
+			case "week":
+				timeBefore.setDate(time.getDate() - 7);
+				break;
+			case "month":
+				timeBefore.setMonth(time.getMonth() - 1);
+				break;
+			default:
+				responseError(res, 501, "Lỗi không xác định top popular!");
+				return;
+		}
+
+		commentModel
+			.aggregate([
+				{
+					$match: {
+						createdAt: {
+							$gte: timeBefore,
+							$lte: time,
+						},
+					},
+				},
+				{
+					$group: {
+						_id: "$idComic",
+						count: { $sum: 1 },
+					},
+				},
+				{
+					$sort: { count: -1 },
+				},
+			])
+			.then((comments) => {
+				if (comments) {
+					var listComicId = comments.map((e) => e._id);
+					comicModel
+						.find({ _id: { $in: listComicId } })
+						.populate("cats")
+						.exec()
+						.then((comics) => {
+							res.json(comics);
+						})
+						.catch((err) => {
+							responseError(res, 501, err);
+						});
+				} else {
+					responseError(res, 501, "Lỗi không xác định từ server, không thể lấy danh sách truyện");
+				}
+			})
+			.catch((err) => {
+				responseError(res, 501, err);
+			});
 	}
 }
 

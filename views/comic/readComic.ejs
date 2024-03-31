@@ -1,91 +1,121 @@
 <script src="/js/support.js"></script>
 <style>
-  html {
-    scroll-behavior: smooth;
-  }
+	html {
+		scroll-behavior: smooth;
+	}
 </style>
 <a href="/home" class="btn bg-white hover:bg-white border-0 hover:border-2 btn-sm m-5 text-secondary">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-  </svg>
-  Back
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		fill="none"
+		viewBox="0 0 24 24"
+		stroke-width="1.5"
+		stroke="currentColor"
+		class="w-6 h-6"
+	>
+		<path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+	</svg>
+	Back
 </a>
 
 <div class="hero my-5">
-  <div class="hero-content flex-col lg:flex-row p-0 m-0">
-    <img src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" class="poster w-64 rounded-lg shadow-2xl me-4" />
-    <div>
-      <span class="names" data-id="<%= id %>"></span>
-      <b class="text-2xl font-bold" id="display-name">Hello</b>
-      <div class="py-1"><b>Author: </b><span class="author"></span></div>
-      <div class="py-1"><b>publicAt: </b><span class="createdAt"></span></div>
-      <p><b>Description: </b></p>
-      <span class=" h-40 block desc p-2" style="overflow-y: scroll;width: 701px; "></span>
-      <a class="btn btn-outline btn-secondary mt-5" href="#position-comment">Bình luận</a>
-    </div>
-  </div>
+	<div class="hero-content flex-col lg:flex-row p-0 m-0">
+		<img
+			src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg"
+			class="poster w-64 rounded-lg shadow-2xl me-4"
+		/>
+		<div>
+			<span class="names" data-id="<%= id %>"></span>
+			<b class="text-2xl font-bold" id="display-name">Hello</b>
+			<div class="py-1"><b>Author: </b><span class="author"></span></div>
+			<div class="py-1"><b>publicAt: </b><span class="createdAt"></span></div>
+			<div class="py-1"><b>Thể loại: </b><span class="cats"></span></div>
+			<p><b>Description: </b></p>
+			<span class="h-40 block desc p-2" style="overflow-y: scroll; width: 701px"></span>
+			<a class="btn btn-outline btn-secondary mt-5" href="#position-comment">Bình luận</a>
+		</div>
+	</div>
 </div>
 <div class="divider">Kéo xuống để đọc</div>
 <!-- <div class="grid grid-cols-4 gap-4">
 </div> -->
-<section class=" contents-container">
-</section>
+<section class="contents-container"></section>
 
 <!-- comments -->
-<div class="border border-4 border-dashed mx-auto p-2 min-h-96" style="width: 900px;" id="position-comment">
-  <a class="link link-accent ms-2 mt-2 block flex" href="#">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 me-1">
-      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-    </svg>
-    về đầu trang
-  </a>
-  <div class="divider divider-start">Bình luận</div>
-  <div class="flsex items-center">
-    <textarea class="textarea textarea-bordered w-full h-48" placeholder="Nhập bình luận"></textarea>
-    <button class="btn btn-save-comment btn-sm btn-outline btn-neutral mt-4">
-      Gửi bình luận
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-      </svg>
-    </button>
-  </div>
+<div class="border border-4 border-dashed mx-auto p-2 min-h-96" style="width: 900px" id="position-comment">
+	<a class="link link-accent ms-2 mt-2 block flex" href="#">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke-width="1.5"
+			stroke="currentColor"
+			class="w-6 h-6 me-1"
+		>
+			<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+		</svg>
+		về đầu trang
+	</a>
+	<div class="divider divider-start">Bình luận</div>
+	<div class="flsex items-center">
+		<textarea class="textarea textarea-bordered w-full h-48" placeholder="Nhập bình luận"></textarea>
+		<button class="btn btn-save-comment btn-sm btn-outline btn-neutral mt-4">
+			Gửi bình luận
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
+				stroke="currentColor"
+				class="w-6 h-6"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+				/>
+			</svg>
+		</button>
+	</div>
 
-  <div class="divider"></div>
+	<div class="divider"></div>
 
-  <aside class="comments-container px-4 min-h-96 block overflow-y-scroll"></aside>
-
+	<aside class="comments-container px-4 min-h-96 block overflow-y-scroll"></aside>
 </div>
 <script>
-  var id = document.querySelector('span.names')
-    .getAttribute("data-id");
+	var id = document.querySelector("span.names").getAttribute("data-id");
 
+	const name = document.getElementById("display-name");
+	const author = document.querySelector(".author");
+	const createdAt = document.querySelector(".createdAt");
+	const desc = document.querySelector(".desc");
+	const cats = document.querySelector(".cats");
+	const poster = document.querySelector(".poster");
+	const contentsContainer = document.querySelector(".contents-container");
+	const commentsContainer = document.querySelector(".comments-container");
+	var listComments = [];
 
-  const name = document.getElementById('display-name');
-  const author = document.querySelector('.author');
-  const createdAt = document.querySelector('.createdAt');
-  const desc = document.querySelector('.desc');
-  const poster = document.querySelector('.poster');
-  const contentsContainer = document.querySelector('.contents-container')
-  const commentsContainer = document.querySelector('.comments-container')
-  var listComments = []
+	const fillComment = () => {
+		var newList = [...listComments];
 
-  const fillComment = () => {
+		if (newList.length <= 0) {
+			commentsContainer.innerText = "Hãy là người đầu tiên bình luận!";
+			return;
+		}
 
-    var newList = [...listComments];
-
-    if (newList.length <= 0) {
-      commentsContainer.innerText = "Hãy là người đầu tiên bình luận!";
-      return
-    }
-
-    commentsContainer.innerHTML = newList.reverse()
-      .map((e, i) => {
-        if (e.idUser) {
-          return `
+		commentsContainer.innerHTML = newList
+			.reverse()
+			.map((e, i) => {
+				if (e.idUser) {
+					return `
             <div class="chat chat-start" data-id="${e._id}">
               <div class="chat-image avatar">
                 <div class="w-10 rounded-full">
-                  <img src=${e.idUser.role == "admin" ? 'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg' : 'https://assets-global.website-files.com/6411daab15c8848a5e4e0153/64a3587a690c6ddc503ee672_Avatar_No%20photo.png'} />
+                  <img src=${
+						e.idUser.role == "admin"
+							? "https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+							: "https://assets-global.website-files.com/6411daab15c8848a5e4e0153/64a3587a690c6ddc503ee672_Avatar_No%20photo.png"
+					} />
                 </div>
               </div>
               <div class="chat-header">
@@ -96,8 +126,8 @@
               <div class="chat-bubble">${e.content}</div>
             </div>
             `;
-        } else {
-          return `
+				} else {
+					return `
             <div class="chat chat-start" data-id="${e._id}">
               <div class="chat-image avatar">
                 <div class="w-10 rounded-full">
@@ -111,198 +141,182 @@
               <div class="chat-bubble">${e.content}</div>
             </div>
             `;
-        }
-      })
-      .join('')
+				}
+			})
+			.join("");
 
-    setBtnDelete()
-  }
+		setBtnDelete();
+	};
 
-  const setBtnDelete = () => {
-    const chatBubbles = document.querySelectorAll('.chat-bubble');
-    chatBubbles.forEach((element, index) => {
-      const outerText = element.outerText;
+	const setBtnDelete = () => {
+		const chatBubbles = document.querySelectorAll(".chat-bubble");
+		chatBubbles.forEach((element, index) => {
+			const outerText = element.outerText;
 
-      // Create button element
-      const button = document.createElement('button');
-      button.className = 'btn btn-circle absolute min-h-3 min-w-3 btn-delete-comment';
-      button.style.right = '-50px';
-      button.style.bottom = 'calc(50% - 48px / 2)';
-      button.innerHTML = `
+			// Create button element
+			const button = document.createElement("button");
+			button.className = "btn btn-circle absolute min-h-3 min-w-3 btn-delete-comment";
+			button.style.right = "-50px";
+			button.style.bottom = "calc(50% - 48px / 2)";
+			button.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
           </svg>
         `;
 
-      // Append button to chat bubble
-      button.style.display = 'none';
-      element.appendChild(button);
-      var istracking = true;
-      var timeOut = null;
+			// Append button to chat bubble
+			button.style.display = "none";
+			element.appendChild(button);
+			var istracking = true;
+			var timeOut = null;
 
-      button.onclick = () => {
+			button.onclick = () => {
+				let id = element.parentElement.getAttribute("data-id");
 
-        let id = element.parentElement.getAttribute('data-id');
+				Swal.fire({
+					title: "Are you sure?",
+					text: "You won't be able to revert this!",
+					icon: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#3085d6",
+					cancelButtonColor: "#d33",
+					confirmButtonText: "Yes, delete it!",
+				}).then((result) => {
+					if (result.isConfirmed) {
+						fetch("/comment/delete/" + id, {
+							method: "DELETE",
+						})
+							.then((res) => res.json())
+							.then((res) => {
+								if (!res.msg && res) {
+									Swal.fire({
+										title: "Deleted!",
+										text: "Your file has been deleted.",
+										icon: "success",
+									}).then((callback) => {
+										if (callback.isConfirmed) {
+											window.location.reload();
+										}
+									});
+								} else {
+									Toastify({
+										text: res.msg,
+										duration: 3000,
+										close: true,
+										gravity: "bottom",
+										position: "center",
+										stopOnFocus: true,
+										style: {
+											background: "red",
+										},
+									}).showToast();
+								}
+							});
+					}
+				});
+			};
 
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-          })
-          .then((result) => {
-            if (result.isConfirmed) {
+			// Handle mouse events
+			element.onmouseover = (event) => {
+				istracking = true;
+				button.style.display = "flex";
+			};
 
-              fetch('/comment/delete/' + id, {
-                  method: "DELETE"
-                })
-                .then(res => res.json())
-                .then(res => {
-                  if (!res.msg && res) {
-                    Swal.fire({
-                        title: "Deleted!",
-                        text: "Your file has been deleted.",
-                        icon: "success"
-                      })
-                      .then(callback => {
-                        if (callback.isConfirmed) {
-                          window.location.reload();
-                        }
-                      })
-                  } else {
-                    Toastify({
-                        text: res.msg,
-                        duration: 3000,
-                        close: true,
-                        gravity: "bottom",
-                        position: "center",
-                        stopOnFocus: true,
-                        style: {
-                          background: "red"
-                        },
-                      })
-                      .showToast();
-                  }
-                })
+			element.onmouseout = (event) => {
+				timeOut = setTimeout(() => {
+					istracking = false;
+					if (!istracking) {
+						button.style.display = "none";
+					}
+				}, 300);
+			};
 
+			button.onmouseover = (event) => {
+				clearTimeout(timeOut);
+				istracking = true;
+				button.style.display = "flex";
+			};
 
+			button.onmouseout = (event) => {
+				istracking = false;
+				button.style.display = "none";
+			};
+		});
+	};
+	// get comments of comic
+	fetch("/comment/comic/" + id)
+		.then((res) => {
+			return res.json();
+		})
+		.then((res) => {
+			listComments = res;
+			fillComment();
+			return true;
+		})
+		.then(() => {});
 
-            }
-          });
-      }
+	// get contents of comic
+	fetch(`/comic/` + id)
+		.then((res) => res.json())
+		.then((res) => {
+			name.innerText = res.name;
+			author.innerText = res.author;
+			createdAt.innerText = convertDateTime(res.createdAt);
+			desc.innerText = res.desc;
+			poster.src = "/images/" + res.poster;
+			cats.innerText = res.cats ? res.cats.name : "Không có thể loại";
 
-      // Handle mouse events
-      element.onmouseover = event => {
-        istracking = true;
-        button.style.display = 'flex';
-      }
+			contentsContainer.innerHTML = res.contents
+				.reverse()
+				.map((e, i) => {
+					return `<img class="block mx-auto" src="/images/${e}" />`;
+				})
+				.join("");
+		});
 
-      element.onmouseout = event => {
-        timeOut = setTimeout(() => {
-          istracking = false;
-          if (!istracking) {
-            button.style.display = 'none';
-          }
-        }, 300)
+	// handle send new comment from admin panel
+	document.addEventListener("DOMContentLoaded", () => {
+		var idUser = document.cookie.split("admin=")[1].split(";")[0];
+		var btnSaveComment = document.querySelector(".btn-save-comment");
+		var inputContent = document.querySelector("textarea");
 
-      }
+		btnSaveComment.onclick = (e) => {
+			if (inputContent.value == "") {
+				Toastify({
+					text: "Vui lòng không bỏ trống bình luận",
+					duration: 3000,
+					close: true,
+					gravity: "bottom",
+					position: "center",
+					stopOnFocus: true,
+					style: {
+						background: "red",
+					},
+				}).showToast();
+				return;
+			}
 
-      button.onmouseover = event => {
-        clearTimeout(timeOut)
-        istracking = true
-        button.style.display = 'flex';
-      }
+			var commentPayload = {
+				idComic: id,
+				idUser: idUser,
+				content: inputContent.value,
+			};
 
-      button.onmouseout = event => {
-        istracking = false;
-        button.style.display = 'none';
-      }
-    })
-
-  }
-  // get comments of comic
-  fetch('/comment/comic/' + id)
-    .then(res => {
-      return res.json()
-    })
-    .then(res => {
-      listComments = res
-      fillComment()
-      return true
-    })
-    .then(() => {})
-
-  // get contents of comic
-  fetch(`/comic/` + id)
-    .then(res => res.json())
-    .then(res => {
-      name.innerText = res.name;
-      author.innerText = res.author;
-      createdAt.innerText = convertDateTime(res.createdAt);
-      desc.innerText = res.desc;
-      poster.src = "/images/" + res.poster;
-
-      contentsContainer.innerHTML = res.contents.reverse()
-        .map((e, i) => {
-          return `<img class="block mx-auto" src="/images/${e}" />`
-        })
-        .join("")
-    });
-
-  // handle send new comment from admin panel
-  document.addEventListener('DOMContentLoaded', () => {
-    var idUser = document.cookie.split("admin=")[1].split(";")[0];
-    var btnSaveComment = document.querySelector('.btn-save-comment');
-    var inputContent = document.querySelector('textarea');
-
-
-    btnSaveComment.onclick = e => {
-
-
-      if (inputContent.value == "") {
-        Toastify({
-            text: "Vui lòng không bỏ trống bình luận",
-            duration: 3000,
-            close: true,
-            gravity: "bottom",
-            position: "center",
-            stopOnFocus: true,
-            style: {
-              background: "red"
-            },
-          })
-          .showToast();
-        return;
-      }
-
-      var commentPayload = {
-        idComic: id,
-        idUser: idUser,
-        content: inputContent.value
-      }
-
-      fetch(`/comment/create`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(commentPayload)
-        })
-        .then(res => res.json())
-        .then(res => {
-
-          if (res._id) {
-            inputContent.value = ""
-            listComments.push(res);
-            fillComment()
-          }
-        })
-
-    }
-
-
-  })
+			fetch(`/comment/create`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(commentPayload),
+			})
+				.then((res) => res.json())
+				.then((res) => {
+					if (res._id) {
+						inputContent.value = "";
+						listComments.push(res);
+						fillComment();
+					}
+				});
+		};
+	});
 </script>

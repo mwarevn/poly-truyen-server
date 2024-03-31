@@ -1,3 +1,4 @@
+const catsRouter = require("./cats.route");
 const comicRouter = require("./comic.route");
 const commentRouter = require("./comment.route");
 const historyRouter = require("./history.route");
@@ -12,6 +13,7 @@ function routes(app) {
 	app.use("/comment", commentRouter);
 	app.use("/user", userRouter);
 	app.use("/history", historyRouter);
+	app.use("/cats", catsRouter);
 }
 
 module.exports = routes;

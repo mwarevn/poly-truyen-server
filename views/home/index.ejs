@@ -1,5 +1,7 @@
 <% if (page == "" || page == "comic" || !page) { %>
 <%- include('../comic/index.ejs') %>
-<% } else { %>
+<% } else if (page == "user") { %>
 <%- include('../user/index.ejs') %>
+<% }else if (page == "cats") { %>
+<%- include('../cats/index.ejs') %>
 <% } %>

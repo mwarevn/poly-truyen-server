@@ -8,6 +8,8 @@ class HistoriesController {
 		let isUser = req.params.idUser;
 		historyModel
 			.findOne({ user: isUser })
+			.populate("history.cats")
+			.exec()
 			.then((caches) => res.json(caches.history))
 			.catch((error) => responseError(res, 501, error));
 	}
