@@ -31,11 +31,11 @@ class ComicController {
 
 		comicModel
 			.create(comicPayload)
-			.populate("cats")
-			.exec()
-			.then((comic) => {
-				if (comic) {
-					socketApi.io.emit("ServerPostNewComic", JSON.stringify(comic));
+			.then(async (newComic) => {
+				var comics = await comicModel.findById(newComic._id).populate("cats").exec();
+
+				if (comics) {
+					socketApi.io.emit("ServerPostNewComic", JSON.stringify(comics));
 					res.redirect("back");
 				} else {
 					responseError(res, 501, "Lỗi không thể tạo mới truyện!");
@@ -62,10 +62,10 @@ class ComicController {
 
 		comicModel
 			.findByIdAndUpdate(id, comicPayload, { new: true })
-			.populate("cats")
-			.exec()
-			.then((comic) => {
-				if (comic) {
+			.then(async (comic) => {
+				var newComicData = await comicModel.findById(comic._id).populate("cats").exec();
+
+				if (newComicData) {
 					socketApi.io.emit("changeListComic", "Change list comic");
 					res.redirect("back");
 				} else {
