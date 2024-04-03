@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
 		cb(null, pathToSaveImage);
 	},
 	filename: function (req, file, cb) {
-		cb(null, "user-avatar" + Date.now() + "-" + file.originalname);
+		cb(null, "user-avatar-" + Date.now() + "-" + file.originalname);
 	},
 });
 

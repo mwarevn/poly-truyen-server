@@ -56,6 +56,12 @@ class UserController {
 		var userPayload = req.body;
 		var id = req.params.id;
 		var existsUser = null;
+		var avatar = null;
+
+		if (req.file && req.file.filename) {
+			avatar = req.file.filename;
+			userPayload.avatar = avatar;
+		}
 
 		if (
 			userPayload.email == "" ||

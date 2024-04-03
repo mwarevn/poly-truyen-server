@@ -161,7 +161,7 @@ class ComicController {
 					},
 				},
 				{
-					$sort: { count: -1 },
+					$sort: { count: -1 }, // Sắp xếp từ nhiều nhất đến ít nhất
 				},
 			])
 			.then((comments) => {
@@ -172,7 +172,14 @@ class ComicController {
 						.populate("cats")
 						.exec()
 						.then((comics) => {
-							res.json(comics);
+							// Tạo một bản đồ truyện với id làm key
+							const comicMap = new Map(comics.map((comic) => [String(comic._id), comic]));
+							// Tạo danh sách truyện sắp xếp từ bản đồ và loại bỏ các phần tử null
+							const sortedComics = listComicId
+								.map((id) => comicMap.get(String(id)))
+								.filter((comic) => comic != null)
+								.slice(0, 5);
+							res.json(sortedComics);
 						})
 						.catch((err) => {
 							responseError(res, 501, err);

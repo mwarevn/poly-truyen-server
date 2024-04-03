@@ -99,6 +99,18 @@ class CommentController {
 			})
 			.catch((err) => responseError(res, 501, err));
 	}
+
+	// [GET] /comment/get-count-comment/:idComic
+	getCountCommentByComicId(req, res) {
+		var idComic = req.params.idComic;
+
+		commentModel
+			.countDocuments({ idComic: idComic })
+			.then((count) => {
+				res.json({ count });
+			})
+			.catch((err) => responseError(res, 501, err));
+	}
 }
 
 module.exports = new CommentController();

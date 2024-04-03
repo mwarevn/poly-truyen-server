@@ -11,7 +11,10 @@ class HistoriesController {
 			.populate("history.cats")
 			.exec()
 			.then((caches) => res.json(caches.history))
-			.catch((error) => responseError(res, 501, error));
+			.catch((error) => {
+				res.json([]);
+				// responseError(res, 501, error)
+			});
 	}
 
 	async saveCache(req, res) {
