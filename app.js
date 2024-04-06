@@ -6,8 +6,7 @@ var logger = require("morgan");
 var partials = require("express-partials");
 var mongoose = require("mongoose");
 const routes = require("./routes");
-const comicModel = require("./models/comic.model");
-const socketApi = require("./socket/socket-io");
+const os = require("os");
 
 var app = express();
 // view engine setup
@@ -20,6 +19,24 @@ app.use(partials());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+// Lấy danh sách các giao diện mạng của máy tính
+const networkInterfaces = os.networkInterfaces();
+
+// Duyệt qua danh sách và lấy ra địa chỉ IPv4
+let serverIP = null;
+Object.keys(networkInterfaces).forEach((interfaceName) => {
+	const interfaces = networkInterfaces[interfaceName];
+	interfaces.forEach((interfaceInfo) => {
+		if (interfaceInfo.family === "IPv4" && !interfaceInfo.internal) {
+			serverIP = interfaceInfo.address;
+		}
+	});
+});
+
+console.log("=====================================");
+console.log(`Server IP: ${serverIP}:${process.env.PORT}`);
+console.log("=====================================");
 
 routes(app);
 
