@@ -8,11 +8,8 @@ const historyModel = require("../models/history.model");
 class ComicController {
 	async getAllComics(req, res) {
 		try {
-			// Tính tổng số lượt view của mỗi comic dựa trên lịch sử (history)
 			const comicViews = await historyModel.aggregate([
-				// Giải phóng mỗi mục trong mảng history thành các documents độc lập
 				{ $unwind: "$history" },
-				// Nhóm các documents theo id của comic và tính tổng số lượt view
 				{ $group: { _id: "$history._id", totalViews: { $sum: 1 } } },
 			]);
 
@@ -21,12 +18,23 @@ class ComicController {
 				comicViewsMap[item._id] = item.totalViews;
 			});
 
+			// Tính tổng số lượt comment của mỗi comic
+			const comicComments = await commentModel.aggregate([
+				{ $group: { _id: "$idComic", totalComments: { $sum: 1 } } },
+			]);
+
+			const comicCommentsMap = {};
+			comicComments.forEach((item) => {
+				comicCommentsMap[item._id] = item.totalComments;
+			});
+
 			// Lấy danh sách comic từ DB và populate các thông tin cần thiết
 			const comics = await comicModel.find({}).populate("cats").exec();
 
 			// Tạo danh sách comic kèm theo số lượt view
 			const listComics = comics.map((comic) => {
 				const totalViews = comicViewsMap[comic._id.toString()];
+				const totalComments = comicCommentsMap[comic._id.toString()];
 				return {
 					_id: comic._id,
 					name: comic.name,
@@ -36,7 +44,8 @@ class ComicController {
 					contents: comic.contents,
 					cats: comic.cats,
 					createdAt: comic.createdAt,
-					views: totalViews || 0, // Nếu có lượt view thì trả về số lượt view đó, ngược lại trả về null
+					views: totalViews || 0,
+					comments: totalComments || 0,
 				};
 			});
 
@@ -187,17 +196,22 @@ class ComicController {
 		}
 
 		try {
-			// Tính tổng số lượt view của mỗi comic dựa trên lịch sử (history)
 			const comicViews = await historyModel.aggregate([
-				// Giải phóng mỗi mục trong mảng history thành các documents độc lập
 				{ $unwind: "$history" },
-				// Nhóm các documents theo id của comic và tính tổng số lượt view
 				{ $group: { _id: "$history._id", totalViews: { $sum: 1 } } },
 			]);
-
 			const comicViewsMap = {};
 			comicViews.forEach((item) => {
 				comicViewsMap[item._id] = item.totalViews;
+			});
+
+			// Tính tổng số lượt comment của mỗi comic
+			const comicComments = await commentModel.aggregate([
+				{ $group: { _id: "$idComic", totalComments: { $sum: 1 } } },
+			]);
+			const comicCommentsMap = {};
+			comicComments.forEach((item) => {
+				comicCommentsMap[item._id] = item.totalComments;
 			});
 
 			const comics = await commentModel.aggregate([
@@ -238,6 +252,8 @@ class ComicController {
 						// Tạo danh sách comic kèm theo số lượt view
 						const listComics = sortedComics.map((comic) => {
 							const totalViews = comicViewsMap[comic._id.toString()];
+							const totalComments = comicCommentsMap[comic._id.toString()];
+
 							return {
 								_id: comic._id,
 								name: comic.name,
@@ -245,7 +261,7 @@ class ComicController {
 								author: comic.author,
 								poster: comic.poster,
 								contents: comic.contents,
-								count: comic.count || 0,
+								comments: totalComments || 0,
 								cats: comic.cats,
 								createdAt: comic.createdAt,
 								views: totalViews || 0, // Nếu có lượt view thì trả về số lượt view đó, ngược lại trả về null
