@@ -1,4 +1,4 @@
-# Pocomi-Android-Client
+# poly truyen server
  Ứng dụng đọc truyện tranh android Pocomi
 
 # Demo
